@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+   
+	<!-- 아이디 중복 검사 -->
+	<select id="check_id" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE ID = #{id}
+	</select>
+	
+	<!-- 이메일 중복 검사 -->
+	<select id="check_email" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE EMAIL = #{email}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="join_member" parameterType="member">
+		INSERT INTO MEMBER (
+			
+		) VALUES (
+			#{id}
+			, #{pw}
+			, #{email}
+			, now()
+			, now()
+			, 'false'
+			, #{approval_key}
+		)
+	</insert>
+	
+	<update id="approval_member" parameterType="member">
+		UPDATE MEMBER SET
+			approval_status = 'true'
+		WHERE EMAIL = #{email}
+		AND APPROVAL_KEY = #{approval_key}
+	</update>
+	
+	 <!-- 로그인 -->
+	 <select id="login" parameterType="String" resultType="member">
+	 	SELECT *
+	 	FROM MEMBER
+	 	WHERE ID = #{id}
+	 </select>
+	 
+	 <!-- 로그인 접속일자 수정 -->
+	 <update id="update_log" parameterType="String">
+	 	UPDATE MEMBER SET
+	 		log_date = now()
+	 	WHERE ID = #{id}
+	 </update>
+	 
+	 <!-- 아이디 찾기 -->
+	 <select id="find_id" parameterType="String" resultType="String">
+	 	SELECT id
+	 	FROM MEMBER
+	 	WHERE EMAIL = #{email}
+	 </select>
+	 
+	 <!-- 비밀번호 변경 -->
+	 <update id="update_pw" parameterType="member">
+	 	UPDATE MEMBER SET
+	 		PW = #{pw}
+	 	WHERE ID = #{id}
+	 </update>
+	 
+	 <!-- 회원정보 수정 -->
+	 <update id="update_mypage" parameterType="member">
+	 	UPDATE MEMBER SET
+	 		EMAIL = #{email}
+	 	WHERE ID = #{id}
+	 </update>
+	 
+	 <!-- 회원탈퇴 -->
+	 <delete id="withdrawal" parameterType="member">
+	 	DELETE
+	 	FROM MEMBER
+	 	WHERE ID = #{id}
+	 	AND PW = #{pw}
+	 </delete>
+   
+</mapper>
